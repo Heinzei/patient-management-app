@@ -1,6 +1,6 @@
 /**
  * Express-Server mit TypeScript.
- * Stellt eine REST-API für Patienten (CRUD) bereit.
+ * Stellt eine REST-API für Patienten bereit.
  */
 
 import express from 'express';

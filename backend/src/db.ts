@@ -1,5 +1,5 @@
 /**
- * Einfache SQLite-Anbindung mit better-sqlite3 (synchron, für Anfänger leicht verständlich).
+ * Einfache SQLite-Anbindung mit better-sqlite3 (synchron).
  * Diese Datei stellt Funktionen zur Verfügung, die von den API-Endpunkten genutzt werden.
  */
 
@@ -27,7 +27,8 @@ db.prepare(`
     housenumber TEXT,
     postalcode TEXT,
     insurance TEXT,
-    created_at TEXT NOT NULL
+    created_at TEXT NOT NULL,
+    city TEXT
   )
 `).run();
 
@@ -36,16 +37,15 @@ export interface Patient {
   id?: number;
   lastname: string;
   firstname: string;
-  birthdate: string; // ISO-Date
+  birthdate: string;
   gender?: string;
   street?: string;
   housenumber?: string;
   postalcode?: string;
   insurance?: string;
-  created_at?: string; // ISO datetime
+  created_at?: string;
+  city?: string;
 }
-
-// CRUD-Funktionen
 
 export function getAllPatients(): Patient[] {
   const stmt = db.prepare('SELECT * FROM patients ORDER BY id DESC');
@@ -60,8 +60,8 @@ export function getPatientById(id: number): Patient | null {
 export function createPatient(p: Patient): Patient {
   const now = new Date().toISOString();
   const stmt = db.prepare(`
-    INSERT INTO patients (lastname, firstname, birthdate, gender, street, housenumber, postalcode, insurance, created_at)
-    VALUES (@lastname, @firstname, @birthdate, @gender, @street, @housenumber, @postalcode, @insurance, @created_at)
+    INSERT INTO patients (lastname, firstname, birthdate, gender, street, housenumber, postalcode, insurance, created_at, city)
+    VALUES (@lastname, @firstname, @birthdate, @gender, @street, @housenumber, @postalcode, @insurance, @created_at, @city)
   `);
   const info = stmt.run({
     lastname: p.lastname,
@@ -72,7 +72,8 @@ export function createPatient(p: Patient): Patient {
     housenumber: p.housenumber || null,
     postalcode: p.postalcode || null,
     insurance: p.insurance || null,
-    created_at: now
+    created_at: now,
+    city: p.city || null
   });
   return getPatientById(info.lastInsertRowid as number) as Patient;
 }
@@ -87,7 +88,8 @@ export function updatePatient(id: number, p: Patient): Patient | null {
       street = @street,
       housenumber = @housenumber,
       postalcode = @postalcode,
-      insurance = @insurance
+      insurance = @insurance,
+      city = @city
     WHERE id = @id
   `);
   const info = stmt.run({
@@ -99,7 +101,8 @@ export function updatePatient(id: number, p: Patient): Patient | null {
     street: p.street || null,
     housenumber: p.housenumber || null,
     postalcode: p.postalcode || null,
-    insurance: p.insurance || null
+    insurance: p.insurance || null,
+    city: p.city || null
   });
   if (info.changes === 0) return null;
   return getPatientById(id);

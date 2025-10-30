@@ -9,6 +9,7 @@
       <p><strong>PLZ:</strong> {{ patient.postalcode }}</p>
       <p><strong>Krankenkasse:</strong> {{ patient.insurance }}</p>
       <p><strong>Angelegt am:</strong> {{ patient.created_at }}</p>
+      <p><strong>Ort:</strong> {{ patient.city }}</p>
       <router-link :to="`/edit/${patient.id}`">Bearbeiten</router-link>
     </div>
     <div v-else>
