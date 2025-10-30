@@ -7,7 +7,7 @@ export interface Patient {
   street?: string;
   housenumber?: string;
   postalcode?: string;
+  city?: string;
   insurance?: string;
   created_at?: string; 
-  city?: string;
 }

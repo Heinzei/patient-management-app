@@ -42,9 +42,9 @@ export interface Patient {
   street?: string;
   housenumber?: string;
   postalcode?: string;
+  city?: string;
   insurance?: string;
   created_at?: string;
-  city?: string;
 }
 
 export function getAllPatients(): Patient[] {
@@ -71,9 +71,9 @@ export function createPatient(p: Patient): Patient {
     street: p.street || null,
     housenumber: p.housenumber || null,
     postalcode: p.postalcode || null,
+    city: p.city || null,
     insurance: p.insurance || null,
-    created_at: now,
-    city: p.city || null
+    created_at: now
   });
   return getPatientById(info.lastInsertRowid as number) as Patient;
 }
@@ -88,8 +88,8 @@ export function updatePatient(id: number, p: Patient): Patient | null {
       street = @street,
       housenumber = @housenumber,
       postalcode = @postalcode,
-      insurance = @insurance,
-      city = @city
+      city = @city,
+      insurance = @insurance
     WHERE id = @id
   `);
   const info = stmt.run({
@@ -101,8 +101,8 @@ export function updatePatient(id: number, p: Patient): Patient | null {
     street: p.street || null,
     housenumber: p.housenumber || null,
     postalcode: p.postalcode || null,
-    insurance: p.insurance || null,
-    city: p.city || null
+    city: p.city || null,
+    insurance: p.insurance || null
   });
   if (info.changes === 0) return null;
   return getPatientById(id);

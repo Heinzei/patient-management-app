@@ -9,8 +9,8 @@
       <div><label>Straße: <input v-model="form.street" /></label></div>
       <div><label>Hausnummer: <input v-model="form.housenumber" /></label></div>
       <div><label>PLZ: <input v-model="form.postalcode" /></label></div>
-      <div><label>Krankenkasse: <input v-model="form.insurance" /></label></div>
       <div><label>Ort: <input v-model="form.city" /></label></div>
+      <div><label>Krankenkasse: <input v-model="form.insurance" /></label></div>
       <div><button type="submit">Erstellen</button></div>
     </form>
   </div>
@@ -34,8 +34,8 @@ export default defineComponent({
       street: '',
       housenumber: '',
       postalcode: '',
-      insurance: '',
       city: '',
+      insurance: '',
     });
 
     const submit = async () => {
