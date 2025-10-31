@@ -1,0 +1,6 @@
+/* Hintergrundfarbe der gesamten Webanwendung */
+body {
+  background-color: #c2c2c2;
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
