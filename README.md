@@ -12,6 +12,7 @@ Folge diesen Schritten, um das Projekt lokal auszuführen.
 - Node.js (20.x.x empfohlen)
 - npm
 - VS-Code
+- SQLite3 Tools (better-sqlite3)
 
 ### Backend starten
 1. Öffne ein Terminal in `backend/`
