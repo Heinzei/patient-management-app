@@ -5,7 +5,29 @@
     <div v-else>
       <table border="1" cellpadding="6">
         <thead>
-          <tr><th>ID</th><th>Name</th><th>Geburtsdatum</th><th>Aktionen</th></tr>
+          <tr>
+            <th @click="sortBy('id')" style="cursor:pointer;">
+              ID
+              <span v-if="sortColumn === 'id' && sortDirection === 'asc'">▲</span>
+              <span v-if="sortColumn === 'id' && sortDirection === 'desc'">▼</span>
+            </th>
+            <th @click="sortBy('lastname')" style="cursor:pointer;">
+              Name
+              <span v-if="sortColumn === 'lastname' && sortDirection === 'asc'">▲</span>
+              <span v-if="sortColumn === 'lastname' && sortDirection === 'desc'">▼</span>
+            </th>
+            <th @click="sortBy('birthdate')" style="cursor:pointer;">
+              Geburtsdatum
+              <span v-if="sortColumn === 'birthdate' && sortDirection === 'asc'">▲</span>
+              <span v-if="sortColumn === 'birthdate' && sortDirection === 'desc'">▼</span>
+            </th>
+            <th @click="sortBy('insurance')" style="cursor:pointer;">
+              Krankenkasse
+              <span v-if="sortColumn === 'insurance' && sortDirection === 'asc'">▲</span>
+              <span v-if="sortColumn === 'insurance' && sortDirection === 'desc'">▼</span>
+            </th>
+            <th>Aktionen</th>
+          </tr>
         </thead>
         <tbody>
           <tr v-for="p in patients" :key="p.id">
@@ -14,6 +36,7 @@
               <router-link :to="`/patients/${p.id}`">{{ p.lastname }}, {{ p.firstname }}</router-link>
             </td>
             <td>{{ formatDate(p.birthdate) }}</td>
+            <td>{{ p.insurance }}</td>
             <td>
               <router-link class="edit-link" :to="`/edit/${p.id}`">Bearbeiten</router-link>
               |
@@ -38,7 +61,10 @@ export default defineComponent({
     const patients = ref<Patient[]>([]);
     const loading = ref(true);
 
-    // Lädt die Patienten vom Backend
+    const sortColumn = ref<string>(''); // Aktuelle Sortierspalte
+    const sortDirection = ref<'asc' | 'desc'>('asc'); // Sortierrichtung
+
+    // Patienten laden
     const load = async () => {
       loading.value = true;
       const res = await axios.get<Patient[]>('http://localhost:3000/patients');
@@ -46,7 +72,47 @@ export default defineComponent({
       loading.value = false;
     };
 
-    // Löscht einen Patienten
+    // Generische Sortierfunktion
+    const sortBy = (column: keyof Patient) => {
+      if (sortColumn.value === column) {
+        sortDirection.value = sortDirection.value === 'asc' ? 'desc' : 'asc';
+      } else {
+        sortColumn.value = column;
+        sortDirection.value = 'asc';
+      }
+
+      // Sortierung anwenden
+      patients.value.sort((a, b) => {
+        const aValue = a[column];
+        const bValue = b[column];
+
+        if (aValue == null) return 1;
+        if (bValue == null) return -1;
+
+        // Numerisch sortieren bei ID
+        if (column === 'id') {
+          return sortDirection.value === 'asc'
+            ? (aValue as number) - (bValue as number)
+            : (bValue as number) - (aValue as number);
+        }
+
+        // Bei Datum sortieren
+        if (column === 'birthdate') {
+          const aDate = new Date(aValue as string).getTime();
+          const bDate = new Date(bValue as string).getTime();
+          return sortDirection.value === 'asc' ? aDate - bDate : bDate - aDate;
+        }
+
+        // Alphabetisch sortieren (Name, Krankenkasse)
+        const aStr = String(aValue).toLowerCase();
+        const bStr = String(bValue).toLowerCase();
+        return sortDirection.value === 'asc'
+          ? aStr.localeCompare(bStr)
+          : bStr.localeCompare(aStr);
+      });
+    };
+
+    // Patient löschen
     const deletePatient = async (id?: number) => {
       if (!id) return;
       if (!confirm('Patient wirklich löschen?')) return;
@@ -61,10 +127,19 @@ export default defineComponent({
 
     onMounted(load);
 
-    return { patients, loading, deletePatient, formatDate };
+    return {
+      patients,
+      loading,
+      deletePatient,
+      formatDate,
+      sortBy,
+      sortColumn,
+      sortDirection
+    };
   }
 });
 </script>
+
 
 <style scoped>
 /* Container der ganzen View */
@@ -104,7 +179,7 @@ tr:hover {
   background-color: #f5f5f5;
 }
 
-/* Buttons im Tabellenbereich */
+/* Button im Tabellenbereich */
 .edit-link {
   color: white;
   background-color: #4CAF50;
@@ -117,7 +192,7 @@ tr:hover {
 .edit-link:hover {
   background-color: #45a049;
 }
-
+/* Button im Tabellenbereich */
 .delete-link {
   color: white;
   background-color: #f44336;
@@ -136,9 +211,23 @@ tr:hover {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center; /* jetzt auch vertikal mittig */
+  justify-content: center;
   min-height: 100vh;
-  background-color: #f9f9f9;
+  background-color: #ffffff;
+}
+
+/* Sortierbare Spaltenköpfe */
+th {
+  background-color: #2196F3;
+  color: white;
+  padding: 10px;
+  text-align: left;
+  user-select: none;
+  transition: background-color 0.2s;
+}
+
+th:hover {
+  background-color: #1976D2;
 }
 
 </style>

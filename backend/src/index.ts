@@ -1,6 +1,5 @@
 /**
  * Express-Server mit TypeScript.
- * Stellt eine REST-API für Patienten bereit.
  */
 
 import express from 'express';
@@ -11,11 +10,10 @@ import { getAllPatients, getPatientById, createPatient, updatePatient, deletePat
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Middleware: CORS, JSON parsing
 app.use(cors());
 app.use(bodyParser.json());
 
-// List all patients (für Frontend nützlich)
+// List all patients
 app.get('/patients', (req, res) => {
   const list = getAllPatients();
   res.json(list);
@@ -34,7 +32,7 @@ app.get('/patients/:id', (req, res) => {
 app.post('/patients', (req, res) => {
   try {
     const payload = req.body as Patient;
-    // Grundlegende Validierung (Anfängerfreundlich)
+    // Validierung
     if (!payload.lastname || !payload.firstname || !payload.birthdate) {
       return res.status(400).json({ error: 'lastname, firstname and birthdate are required' });
     }
@@ -68,7 +66,6 @@ app.delete('/patients/:id', (req, res) => {
   res.status(204).send();
 });
 
-// Starte Server
 app.listen(port, () => {
   console.log(`Server läuft auf http://localhost:${port}`);
 });

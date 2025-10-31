@@ -44,7 +44,7 @@ a {
   display: inline-block;
   margin: 0 8px;
   padding: 8px 14px;
-  background-color: #2196F3; /* Blau */
+  background-color: #2196F3;
   color: white;
   text-decoration: none;
   border-radius: 6px;
@@ -57,7 +57,7 @@ a {
 }
 
 .nav-button.create {
-  background-color: #4CAF50; /* Grün */
+  background-color: #4CAF50;
 }
 
 .nav-button.create:hover {

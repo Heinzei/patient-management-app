@@ -1,17 +1,15 @@
 /**
- * Einfache SQLite-Anbindung mit better-sqlite3 (synchron).
- * Diese Datei stellt Funktionen zur Verfügung, die von den API-Endpunkten genutzt werden.
+ * Einfache SQLite-Anbindung mit better-sqlite3
  */
 
 import Database from 'better-sqlite3';
 import path from 'path';
 import fs from 'fs';
 
-// Datenbank-Dateipfad (im Projektordner backend/data)
 const dbFolder = path.join(__dirname, '..', 'data');
 if (!fs.existsSync(dbFolder)) fs.mkdirSync(dbFolder);
 
-// Öffne (oder erstelle) die SQLite-Datei
+// Öffne SQLite-Datei
 const dbPath = path.join(dbFolder, 'patients.db');
 const db = new Database(dbPath);
 
@@ -26,13 +24,12 @@ db.prepare(`
     street TEXT,
     housenumber TEXT,
     postalcode TEXT,
+    city TEXT,
     insurance TEXT,
-    created_at TEXT NOT NULL,
-    city TEXT
+    created_at TEXT NOT NULL    
   )
 `).run();
 
-// Typescript-Interface für Patient
 export interface Patient {
   id?: number;
   lastname: string;

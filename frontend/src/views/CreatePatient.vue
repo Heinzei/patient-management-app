@@ -39,9 +39,7 @@ export default defineComponent({
     });
 
     const submit = async () => {
-      // POST an Backend
       await axios.post('http://localhost:3000/patients', form);
-      // Nach dem Erstellen zurück zur Liste
       router.push('/');
     };
 
